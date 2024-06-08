@@ -1,25 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 
 Future<String?> obterStatusVeiculo(String placaVeiculo, PostgreSQLConnection connection) async {
-  /*
-   Obtém o valor da oitava coluna para uma linha específica com base na coluna "placa" e converte o valor booleano em string correspondente ("Ativo" ou "Inativo").
-
-   Args:
-       placa_veiculo (str): Placa do veículo a ser consultado.
-       connection: Objeto de conexão ao banco de dados PostgreSQL.
-
-   Returns:
-       str: "Ativo" se a oitava coluna for True, "Inativo" se for False, None se o veículo não for encontrado.
-  */
   var result = await connection.query(
     'SELECT * FROM cco2.public.tb_veiculo WHERE placa = @placa',
-    substitutionValues: {
-      'placa': placaVeiculo,
-    },
+    substitutionValues: {'placa': placaVeiculo},
   );
 
   if (result.isNotEmpty) {
-    var valorBooleano = result[0][7];  // A oitava coluna tem índice 7 (0-indexed)
+    var valorBooleano = result[0][7];
     return valorBooleano ? "Ativo" : "Inativo";
   } else {
     return null;
@@ -27,12 +16,6 @@ Future<String?> obterStatusVeiculo(String placaVeiculo, PostgreSQLConnection con
 }
 
 Future<PostgreSQLConnection?> connectToDatabase() async {
-  /*
-   Conecta ao banco de dados PostgreSQL e retorna um objeto de conexão.
-
-   Returns:
-       connection: Objeto de conexão ao banco de dados.
-  */
   try {
     var connection = PostgreSQLConnection(
       '10.233.44.28',
@@ -51,21 +34,93 @@ Future<PostgreSQLConnection?> connectToDatabase() async {
   }
 }
 
-void main() async {
-  var connection = await connectToDatabase();
+void main() {
+  runApp(MyApp());
+}
 
-  if (connection != null) {
-    var placaVeiculo = "OVO1648 ";
-    var statusVeiculo = await obterStatusVeiculo(placaVeiculo, connection);
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomeScreen(),
+    );
+  }
+}
 
-    if (statusVeiculo != null) {
-      print("O veículo com a placa $placaVeiculo está $statusVeiculo.");
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _placaController = TextEditingController();
+  String? _statusVeiculo;
+  PostgreSQLConnection? _connection;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDbConnection();
+  }
+
+  Future<void> _initDbConnection() async {
+    var connection = await connectToDatabase();
+    setState(() {
+      _connection = connection;
+    });
+  }
+
+  Future<void> _consultarStatus() async {
+    if (_connection != null) {
+      var status = await obterStatusVeiculo(_placaController.text.trim(), _connection!);
+      setState(() {
+        _statusVeiculo = status ?? "Veículo não encontrado";
+      });
     } else {
-      print("O veículo com a placa $placaVeiculo não foi encontrado.");
+      setState(() {
+        _statusVeiculo = "Falha na conexão com o banco de dados";
+      });
     }
+  }
 
-    await connection.close();
-  } else {
-    print("Falha ao conectar ao banco de dados!");
+  @override
+  void dispose() {
+    _placaController.dispose();
+    _connection?.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Consulta de Veículo'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _placaController,
+              decoration: InputDecoration(
+                labelText: 'Placa do Veículo',
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _consultarStatus,
+              child: Text('Consultar'),
+            ),
+            SizedBox(height: 20),
+            if (_statusVeiculo != null) ...[
+              Text(
+                'Status: $_statusVeiculo',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }
