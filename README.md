@@ -1,38 +1,41 @@
 Projeto Flutter com Node.js e PostgreSQL
 Este projeto demonstra como configurar um aplicativo Flutter para consultar um banco de dados PostgreSQL através de uma API backend construída em Node.js. Ele inclui soluções para problemas de CORS ao rodar o Flutter Web e passos para configurar e integrar todos os componentes.
 
-Configuração do Backend com Node.js e Express
-Passo 1: Criar o Diretório Backend dentro do projeto flutter
+##Configuração do Backend com Node.js e Express
+##Passo 1: Criar o Diretório Backend dentro do projeto flutter
 
-bash
+```bash
 
-mkdir backend
-cd backend
+$ mkdir backend
+$ cd backend
+```
 
-Passo 2: Inicializar um Projeto Node.js
-bash
+## Passo 2: Inicializar um Projeto Node.js
+```bash
 
-npm init -y
+$ npm init -y
+```
 
-Passo 3: Instalar Dependências
-bash
+## Passo 3: Instalar Dependências
+```bash
 
-npm install express pg cors
-
-Passo 4: Criar o Arquivo index.js
-bash
+$npm install express pg cors
+```
+## Passo 4: Criar o Arquivo index.js
+```bash
 
 touch index.js
-
-Passo 5: Adicionar o Código no Arquivo index.js
-
+```
+##Passo 5: Adicionar o Código no Arquivo index.js
+```bash
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const app = express();
 const port = 3000;
-
-// Configurar a conexão com o banco de dados PostgreSQL
+```
+## Configurar a conexão com o banco de dados PostgreSQL
+``` bash
 const pool = new Pool({
 user: 'postgres',
 host: 'localhost',
@@ -40,14 +43,17 @@ database: 'postgres',
 password: '022002',
 port: 5433,
 });
-
-// Middleware para habilitar CORS
+```
+## Middleware para habilitar CORS
+```bash
 app.use(cors());
-
-// Middleware para parsing de JSON
+```
+## Middleware para parsing de JSON
+``` bash
 app.use(express.json());
-
-// Rota para consultar o status do veículo
+```
+## Rota para consultar o status do veículo
+```bash
 app.get('/status-veiculo/:placa', async (req, res) => {
 const { placa } = req.params;
 try {
@@ -67,24 +73,24 @@ res.status(500).json({ error: 'Erro ao consultar o banco de dados' });
 app.listen(port, () => {
 console.log(`Servidor rodando em http://localhost:${port}`);
 });
-
-Passo 6: Iniciar o Servidor
-bash
+```
+##Passo 6: Iniciar o Servidor
+```bash
 
 node index.js
 
+```
+## Configuração do Frontend Flutter
 
-Configuração do Frontend Flutter
-
-Passo 2: Atualizar o pubspec.yaml
-Adicione a dependência http:
-
+## Passo 2: Atualizar o pubspec.yaml
+## Adicione a dependência http:
+``` bash
 dependencies:
 flutter:
 sdk: flutter
 http: ^0.13.3
-
-Passo 3: Criar o Arquivo main.dart no Diretório lib
+```
+## Passo 3: Criar o Arquivo main.dart no Diretório lib
 
 Solução de Problemas
 Problema: "Cannot GET /"
@@ -100,10 +106,10 @@ Solução:
 
 Habilitar CORS no Backend:
 Instale o middleware cors e configure-o no seu servidor Node.js.
-bash
+```bash
 
 npm install cors
-
+```
 Remover o arquivo flutter_tools.stamp:
 Navegue para o diretório flutter\bin\cache e remova o arquivo flutter_tools.stamp.
 
@@ -123,16 +129,17 @@ Executar o Projeto
 Passo 1: Iniciar o Backend
 Certifique-se de que o backend está rodando:
 
-bash
+```bash
 cd backend
 node index.js
-
+```
 Passo 2: Iniciar o Frontend
 Navegue para o diretório do projeto Flutter e execute o aplicativo:
 
-bash
+```bash
 cd frontend
 flutter run -d chrome
+```
 Testar a Aplicação
 Insira uma Placa:
 
