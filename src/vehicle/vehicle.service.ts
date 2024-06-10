@@ -6,7 +6,6 @@ import { Vehicle } from './vehicle.entity';
 @Injectable()
 export class VehicleService {
   private readonly logger = new Logger(VehicleService.name);
-
   constructor(
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
