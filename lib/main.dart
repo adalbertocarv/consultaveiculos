@@ -4,7 +4,7 @@ import 'dart:convert';
 
 Future<String?> obterStatusVeiculo(String placaVeiculo) async {
   try {
-    final response = await http.get(Uri.parse('http://localhost:3000/status-veiculo/$placaVeiculo'));
+    final response = await http.get(Uri.parse('http://localhost:3000/vehicle/$placaVeiculo'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
