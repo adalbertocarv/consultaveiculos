@@ -5,10 +5,10 @@ const app = express();
 const port = 3000;
 
 const pool = new Pool({
-  user: 'ADALCSJ',
-  host: '10.233.44.28',
-  database: 'cco2',
-  password: 'Y3U8V2GmmR',
+  user: 'usuario',
+  host: 'hostname',
+  database: 'banco',
+  password: 'senha',
   port: 5432,
 });
 
