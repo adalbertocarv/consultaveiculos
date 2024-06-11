@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       // Define o tema do aplicativo
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -71,16 +72,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+        body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Exibe a imagem do ônibus no topo
-            Image.asset(
-              'images/onibus.png', // Certifique-se de ter uma imagem de ônibus em assets/bus.png
-              height: 300,
-            ),
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+    Image.asset(
+    'images/onibus.png', // Certifique-se de ter uma imagem de ônibus em assets/bus.png
+    height: 300,
+    ),
             SizedBox(height: 20),
             // Título do campo de pesquisa
             Text(
@@ -99,6 +100,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.search, // Define a ação do botão do teclado como "search"
+              onSubmitted: (value) {
+                _consultarStatus(); // Chama a função de consulta quando o botão "Confirmar" do teclado é pressionado
+              },
             ),
             SizedBox(height: 20),
             // Botão para acionar a consulta
@@ -122,6 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 }
